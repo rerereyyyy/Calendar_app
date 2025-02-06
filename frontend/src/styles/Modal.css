@@ -43,19 +43,10 @@
     max-width: 500px;
     width: 100%;
 }
-
-.button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-  
+ 
   /* Close ボタン */
 .close-button {
-    background-color: #00FFFF;
+    background-color: #00d9ff;
     color: #333;
 }
   
@@ -70,6 +61,14 @@
     opacity: 0.8;
 }
   
+.edit-button {
+    background-color: #564caf !important;
+    color: white !important;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
 
 .modal-content {
     position: relative;
@@ -78,4 +77,22 @@
     margin: 50px auto;
     width: 300px;
     z-index: 10000; /* モーダル内部が前面に来るように */
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
 }

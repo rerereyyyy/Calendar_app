@@ -14,6 +14,7 @@ const Calendar = () => {
   const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態
   const [selectedEvent, setSelectedEvent] = useState(null); // クリックされた予定の詳細
   const [formModalOpen, setFormModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // イベントをバックエンドから取得
   useEffect(() => {
@@ -30,8 +31,31 @@ const Calendar = () => {
     }
   };
 
-  const openFormModal = () => setFormModalOpen(true);
-  const closeFormModal = () => setFormModalOpen(false);
+  const openFormModal = () => {
+    setIsEditMode(false);
+    setSelectedEvent(null);
+    setFormModalOpen(true);
+  };
+
+  const closeFormModal = () => {
+    setFormModalOpen(false);
+    setIsEditMode(false);
+  };
+
+  const handleEventUpdate = async (updatedEvent) => {
+    try {
+        await axios.put(`http://localhost:5003/api/events/${updatedEvent._id}`, updatedEvent);
+        setEvents(prevEvents =>
+            prevEvents.map(event =>
+                event._id === updatedEvent._id ? { ...event, ...updatedEvent } : event
+            )
+        );
+        setFormModalOpen(false);
+    } catch (error) {
+        console.error('Error updating event:', error);
+    }
+  };
+
 
   // 予定がクリックされたときに詳細を取得してモーダルを開く
   const handleEventClick = (clickInfo) => {
@@ -42,12 +66,20 @@ const Calendar = () => {
       end: clickInfo.event.end,
       description: clickInfo.event.extendedProps.description || "",
       location: clickInfo.event.extendedProps.location || "",
+      reminderTime: clickInfo.event.extendedProps.reminderTime || 0
     };
 
     console.log('Event details for modal:', eventDetails); // モーダルに渡す前に確認
 
     setSelectedEvent(eventDetails);  // eventDetails を setSelectedEvent にセット
     setModalOpen(true);  // モーダルを開く
+  };
+
+  const handleEditEvent = (eventDetails) => {
+    setIsEditMode(true);
+    setSelectedEvent(eventDetails);
+    setModalOpen(false);
+    setFormModalOpen(true);
   };
 
   // イベントの削除処理
@@ -92,6 +124,14 @@ return (
     {/* 予定追加モーダル */}
     {formModalOpen && <EventFormModal onClose={closeFormModal} fetchEvents={fetchEvents} />}
 
+    {formModalOpen && (
+      <EventFormModal
+        onClose={closeFormModal}
+        fetchEvents={fetchEvents}
+        eventDetails={selectedEvent}
+      />
+     )}
+
     {/* 予定詳細モーダル */}
     {modalOpen && (
       <Modal 
@@ -99,6 +139,7 @@ return (
         eventDetails={selectedEvent}
         onClose={() => setModalOpen(false)}
         onDelete={handleEventDelete}
+        onEdit={handleEditEvent}
       />
     )}
   </div>

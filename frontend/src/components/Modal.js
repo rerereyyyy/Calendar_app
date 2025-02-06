@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import '../styles/Modal.css'
 
 
-const Modal = ({ isOpen, eventDetails, onClose, onDelete }) => {
+const Modal = ({ isOpen, eventDetails, onClose, onDelete, onEdit }) => {
 
     useEffect(() => {
         console.log('Event details received:', eventDetails); // 受け取ったイベント詳細を確認
@@ -45,12 +45,15 @@ const Modal = ({ isOpen, eventDetails, onClose, onDelete }) => {
         <div className='modal-overlay' onClick={onClose}>
             <div className='modal' onClick={handleContentClick}>
                 <h3>{eventDetails.title}</h3>
-                <p><strong>Start:</strong> {startDate}</p>
-                <p><strong>End:</strong> {endDate}</p>
-                <p><strong>Description</strong> {eventDetails.description || 'No description'}</p>
-                <p><strong>Location:</strong> {eventDetails.location || 'No location'}</p>
-                <button onClick={onClose} className='button close-button'>Close</button>
-                <button onClick={handleDelete} className='button delete-button'>Delete Event</button>
+                <p><strong>開始時刻：</strong> {startDate}</p>
+                <p><strong>終了時刻：</strong> {endDate}</p>
+                <p><strong>説明</strong> {eventDetails.description || 'No description'}</p>
+                <p><strong>場所：</strong> {eventDetails.location || 'No location'}</p>
+                <div className='modal-buttons'>
+                    <button onClick={() => onEdit(eventDetails)} className='button edit-button'>編集</button>
+                    <button onClick={onClose} className='button close-button'>閉じる</button>
+                    <button onClick={handleDelete} className='button delete-button'>削除</button>
+                </div>            
             </div>
         </div>
     );
